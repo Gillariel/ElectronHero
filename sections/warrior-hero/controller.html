@@ -1,0 +1,60 @@
+<template class="task-template">
+    <section id="controller-section" class="section js-section u-category-warrior-hero">
+        <header class="section-header">
+            <div class="section-wrapper">
+                <h1>
+                    <svg class="section-icon">
+                        <use xlink:href="assets/img/icons.svg#icon-windows"></use>
+                    </svg>
+                    Manage Controller
+                </h1>
+                <h3>Here you can consult the actually connected <code>Guitar Controllers</code>.<br /> 
+                    If none is listed, maybe yours is not connected yet ! <br />
+                    No need to restart the app, controller can be loaded on the fly ;)</h3>
+            </div>
+        </header>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                <button id="new-window-demo-toggle" class="js-container-target demo-toggle-button">Consult Controllers List
+                    <div class="demo-meta u-avoid-clicks">Supports: Win, macOS, Linux 
+                        <span class="demo-meta-divider">|</span> No result: Controller is not compatible
+                    </div>
+                </button>
+                <div class="demo-box">
+                    <div id="controller-container">
+                        <h3>List of connected Controller</h3>
+                        <ul style="padding-left: 40px" id="controller-list"></ul>
+                    </div>
+
+                    <div style="display: inline-block">
+                        <h3 style="float: left">Last Button Pressed : &nbsp;</h3> <span style="float: right" id="last-button-pressed"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            if (Controller.supported) {
+                Controller.search();
+                window.addEventListener('gc.controller.found', function(event) {
+                    var controller = event.detail.controller;
+                    var element = document.createElement('li');
+                    element.id = controller.name;
+                    element.textContent = controller.name;
+                    document.getElementById("controller-list").appendChild(element);
+                }, false);
+
+                window.addEventListener('gc.controller.lost', function(event) {
+                    var controller = event.detail.controller;
+                    document.getElementById("controller-list").removeChild(document.getElementById(`${controller.name}`))
+                }, false);
+
+                window.addEventListener('gc.button.press', function(event) {
+                    var button = event.detail;
+                    document.getElementById("last-button-pressed").textContent = button.name;
+                }, false);
+            } else console.log("Controller API Not supproted :/")
+        </script>
+    </section>
+</template>

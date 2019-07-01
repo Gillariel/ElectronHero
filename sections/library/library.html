@@ -1,0 +1,223 @@
+<template class="task-template">
+    <section id="library-section" style="background-color: blanchedalmond" class="section js-section u-category-library">
+        <style>
+            .library-container {
+                position: relative;
+                padding-left: 5%;
+                padding-right: 5%;
+                padding-top: 5%;
+                padding-bottom: 5%;
+            }
+            .select,
+            #locale {
+                width: 100%;
+            }
+
+            .like {
+                margin-right: 10px;
+            }
+        </style>
+
+        <header class="section-header">
+            <div class="section-wrapper">
+                <h1>
+                    <svg class="section-icon">
+                        <use xlink:href="assets/img/icons.svg#icon-windows"></use>
+                    </svg>
+                    Manage Library
+                </h1>
+                <h3>Here you can consult and manage <code>Your library</code>.<br />
+                    <!-- If none is listed, maybe yours is not connected yet ! <br />
+                        No need to restart the app, controller can be loaded on the fly ;) -->
+                </h3>
+            </div>
+        </header>
+        <button style="position: relative; float: right; z-index: 100000; cursor: pointer;" id="library-import-songs" class="demo-button">Import Songs</button>
+
+        <div class="library-container">
+            <div class="select">
+                <select style="background-color: whitesmoke" class="form-control" id="locale">
+                    <option value="guitar" selected>Guitar</option>
+                    <option value="guitar">Guitar CO-OP</option>
+                    <option value="guitar">Bass</option>
+                    <option value="guitar">Drums</option>
+                    <option value="guitar">Keyboard</option>
+                    <option value="guitar">Vocals</option>
+                </select>
+            </div>
+
+            <div id="toolbar">
+            </div>
+            <table style="background-color: whitesmoke" id="table" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-footer="true"
+                data-show-toggle="true" data-show-fullscreen="true" data-show-columns="true" data-show-export="true"
+                data-detail-view="true" data-detail-formatter="detailFormatter"
+                data-click-to-select="true"
+                data-minimum-count-columns="1"
+                data-show-pagination-switch="true" data-pagination="true" data-side-pagination="server"
+                data-id-field="artist"
+                data-page-size="50" data-page-list="[10, 25, 50, 100, all]"
+                data-url="./assets/db_library.json"
+                data-response-handler="responseHandler">
+            </table>
+        </div>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                
+            </div>
+        </div>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                <button id="new-window-demo-toggle" class="js-container-target demo-toggle-button">Add Song(s)
+                    <div class="demo-meta u-avoid-clicks">Supports: Win, macOS, Linux
+                        <span class="demo-meta-divider">|</span> No result: Directory is not available
+                    </div>
+                </button>
+                <div class="demo-box">
+                    <div id="controller-container">
+                        <h3>List of connected Controller</h3>
+                        <ul style="padding-left: 40px" id="controller-list"></ul>
+                    </div>
+
+                    <div style="display: inline-block">
+                        <h3 style="float: left">Last Button Pressed : &nbsp;</h3> <span style="float: right"
+                            id="last-button-pressed"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            require('./renderer-process/library/import')
+        </script>
+        
+        <!-- Table Scripts -->
+        <script>
+            var $table = $('#table')
+            var $remove = $('#remove')
+            var selections = []
+
+            function getIdSelections() {
+                return $.map($table.bootstrapTable('getSelections'), function (row) {
+                    return row.artist
+                })
+            }
+
+            // Doent know what's his use
+            function responseHandler(res) {
+                $.each(res.rows, function (i, row) {
+                    row.state = selections.filter(s => s.info.artist == row.artist).length > 0
+                })
+                return res
+            }
+
+            function detailFormatter(index, row) {
+                var html = []
+                $.each(row, function (key, value) {
+                    if(key == "info")
+                        html.push(`
+                            <span><b>Artist: </b>${value.artist}</span><br />
+                            <span><b>Song: </b>${value.name}</span><br />
+                            <span><b>Album: </b>${value.album}</span><br />
+                            <span><b>Genre: </b>${value.genre}</span><br />
+                            <span><b>Year: </b>${value.year}</span><br />
+                            <span><b>Duration: </b>${(value.song_length / 60000).toFixed(2)}</span><br />
+                            <span><b>Charter: </b>${value.charter}</span><br />
+                        `)
+                    else
+                        html.push('<span><b>' + key + ':</b> ' + value + '</span><br /><br />')
+                })
+                return html.join('')
+            }
+
+            function operateFormatter(value, row, index) {
+                return [
+                    '<a class="like" href="javascript:void(0)" title="Like">',
+                    '<i class="fa fa-heart"></i>',
+                    '</a>  ',
+                    '<a class="remove" href="javascript:void(0)" title="Remove">',
+                    '<i class="fa fa-trash"></i>',
+                    '</a>'
+                ].join('')
+            }
+
+            window.operateEvents = {
+                'click .like': function (e, value, row, index) {
+                    alert('You click like action, row: ' + JSON.stringify(row))
+                },
+                'click .remove': function (e, value, row, index) {
+                    $table.bootstrapTable('remove', {
+                        field: 'name',
+                        values: [row.info.name]
+                    })
+                }
+            }
+            function initTable() {
+                $table.bootstrapTable('destroy').bootstrapTable({
+                    //height: (window.innerHeight / 100) * 80,
+                    locale: $('#locale').val(),
+                    columns: [
+                        /*{
+                            field: 'state',
+                            checkbox: true,
+                            
+                            align: 'center',
+                            valign: 'middle'
+                        },*/{
+                            title: 'Name',
+                            field: 'info.name',
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: true,
+                        },{
+                            title: 'Artist',
+                            field: 'info.artist',
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: true
+                        },{
+                            title: 'Play Count',
+                            field: 'info.play_count',
+                            sortable: true,
+                            align: 'center'
+                        },{
+                            field: 'operation',
+                            title: 'Operation',
+                            align: 'center',
+                            events: window.operateEvents,
+                            formatter: operateFormatter
+                        }
+                    ]
+                })
+                $table.on('check.bs.table uncheck.bs.table ' +
+                    'check-all.bs.table uncheck-all.bs.table',
+                    function () {
+                        $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+
+                        // save your data, here just save the current page
+                        selections = getIdSelections()
+                        // push or splice the selections if you want to save all data selections
+                    })
+                $table.on('all.bs.table', function (e, name, args) {
+                    //console.log(name, args)
+                })
+                $remove.click(function () {
+                    var ids = getIdSelections()
+                    $table.bootstrapTable('remove', {
+                        field: 'artist',
+                        values: ids
+                    })
+                    $remove.prop('disabled', true)
+                })
+                var count = $table.bootstrapTable('getSelections').length;
+                $table.data("total-field", count);
+            }
+
+            $(function () {
+                initTable()
+                $('#locale').change(initTable)
+            })
+        </script>
+    </section>
+</template>

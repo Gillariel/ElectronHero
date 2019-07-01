@@ -1,0 +1,71 @@
+<template class="task-template">
+    <section id="browse-section" style="background-color: white" class="section js-section u-category-library">
+        <header class="section-header">
+            <div class="section-wrapper">
+                <h1>
+                    <svg class="section-icon">
+                        <use xlink:href="assets/img/icons.svg#icon-windows"></use>
+                    </svg>
+                    Browse Central Repository
+                </h1>
+                <h3>Here you can browse songs from <code>Chorus</code> and download them inside this app songs repository<br />
+                    so that you do not need to add them yourself!.<br />
+                </h3>
+            </div>
+        </header>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                <button id="get-latest-demo-toggle" class="js-container-target demo-toggle-button">Get Latest Songs
+                    <div class="demo-meta u-avoid-clicks">Supports: Win, macOS, Linux
+                        <span class="demo-meta-divider">|</span> No result: Chorus API is down
+                    </div>
+                </button>
+                <button style="display: inline-block; cursor: pointer" id="call-get-latest" class="demo-button">Get</button>
+                <div class="demo-box">
+                    <div id="get-latest-container">
+                        <h3>Songs results: </h3>
+                        <ul style="padding-left: 40px" id="get-latest-result-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                <button id="get-random-demo-toggle" class="js-container-target demo-toggle-button">Get Random Songs
+                    <div class="demo-meta u-avoid-clicks">Supports: Win, macOS, Linux
+                        <span class="demo-meta-divider">|</span> No result: Chorus API is down
+                    </div>
+                </button>
+                <button style="display: inline-block; cursor: pointer" id="call-get-random" class="demo-button">Get</button>
+                <div class="demo-box">
+                    <div id="get-random-container">
+                        <h3>Songs results: </h3>
+                        <ul style="padding-left: 40px" id="get-random-result-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo">
+            <div class="demo-wrapper">
+                <button id="get-search-demo-toggle" class="js-container-target demo-toggle-button">Advanced Search
+                    <div class="demo-meta u-avoid-clicks">Supports: Win, macOS, Linux
+                        <span class="demo-meta-divider">|</span> No result: Chorus API is down || Search malformatted
+                    </div>
+                </button>
+                <div class="demo-box">
+                    <div id="get-search-container">
+                        <h3>Songs results: </h3>
+                        <ul style="padding-left: 40px" id="get-search-result-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            require('./renderer-process/library/browse')
+        </script>
+    </section>
+</template>

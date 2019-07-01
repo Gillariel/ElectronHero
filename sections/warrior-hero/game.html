@@ -1,0 +1,101 @@
+<template class="task-template">
+    <section style="background: black;text-align: center" id="game-section" class="section js-section u-category-warrior-hero">
+        <style>
+            .empty-note {
+                position: absolute;
+                height: 60px;
+                width: 100px;
+                bottom: 200px;
+                /* transform: perspective(-200px) rotateY(-25deg); */
+                z-index: 100000;
+                animation: stay 20s linear infinite;
+            }
+            .note {
+                position: absolute;
+                height: 100px;
+                width: 160px;
+                bottom: 200px;
+                transform: rotateX(45deg);
+                z-index: 100000;
+                animation: slide 20s linear infinite;
+            }
+
+            .container-highway {
+                max-width: 512px;
+                max-height: 90vh;
+                margin-left: 10%;
+                transform-origin: 50% 75%;
+                transform: perspective(200px) rotateX(25deg);
+            }
+
+            .crawl-highway {
+                position: relative;
+                top: -100px;
+            }
+
+            .sliding-background-highway {
+                display: flex;
+                justify-content: center;
+                text-align: justify;
+
+                background: url("./assets/img/highway/GH2_x360-Death_Metal.png") repeat-y;
+                height: 10240px;
+                width: 512px;
+                animation: slide 20s linear infinite;
+                background:linear-gradient(top,rgba(0,0,0,1),rgba(0,0,0,0) 65%);
+            }
+
+            @keyframes slide{
+                0%{
+                    transform: translate3d(0, -10240px, 0);
+                }
+                100%{
+                    transform: translate3d(0, 1024px, 0); 
+                }
+            }
+
+            @keyframes stay{
+                0%{
+                    transform: translate3d(0, 1024px, 0);
+                }
+                100%{
+                    transform: translate3d(0, -10240px, 0);
+                }
+            }
+
+        </style>
+        <header class="section-header">
+            <h1 style="color: white" id="error-inside-game"></h1>
+            <p style="color: white" id="blblblbl"></p>
+            <div style="overflow-x: visible; overflow-y: visible" class="section-wrapper">
+                
+                <div class="container-highway">
+                    
+                    <div class="crawl-highway">
+                        <div id="highway" class="sliding-background-highway">
+                                <div style="z-index: 1000" id="note-highway">
+                                    <img style="left: 0%" class="empty-note" id="empty-note-green" src="./assets/img/notes/green.png" />
+                                    <img style="left: 20%" class="empty-note" id="empty-note-red" src="./assets/img/notes/red.png" />
+                                    <img style="left: 40%" class="empty-note" id="empty-note-yellow" src="./assets/img/notes/yellow.png" />
+                                    <img style="left: 60%" class="empty-note" id="empty-note-blue" src="./assets/img/notes/blue.png" />
+                                    <img style="left: 80%" class="empty-note" id="empty-note-orange" src="./assets/img/notes/orange.png" />
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <script>
+            require('./renderer-process/warrior-hero/game')
+            setTimeout(() => {
+                var note = document.createElement("img");
+                note.src = "./assets/img/notes/green.png";
+                note.style.bottom = "5240px";
+                note.style.left = "15%";
+                note.classList.add("note");
+                var highway = document.getElementById("note-highway");
+                highway.appendChild(note);
+            }, 10);
+        </script>
+    </section>
+</template>

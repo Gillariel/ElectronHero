@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<style>
+    body {
+        font-family: system, -apple-system, '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+        color: #fff;
+        background-color: #8aba87;
+        text-align: center;
+        font-size: 16px;
+    }
+    
+    h2 {
+        padding: 0;
+        margin: 0;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .closeButton {
+        position: absolute;
+        top: 90%;
+        opacity: 0.7;
+        font-size: 12px;
+    }
+    
+</style>
+        
+<h2>A Database of songs is already present on your system, do you really want to override it ?</h2>
+<div style="display: inline-block">
+    <button class="btn btn-info closeButton" style="left: 40%" id="abort" onclick="abort()">Abort</a>
+    <button class="btn btn-danger closeButton" style="left: 50%" id="confirm" onclick='confirm();'>Override</a>
+</div>
+
+<script>
+
+</script>
+        

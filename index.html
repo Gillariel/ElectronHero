@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- Load JQuery as soon as possible since many depends on it..-->
+  <script>window.$ = window.jQuery = require('jquery');</script>
+
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/nativize.css">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/about.css">
+  <link rel="stylesheet" href="assets/css/nav.css">
+  <link rel="stylesheet" href="assets/css/section.css">
+  <link rel="stylesheet" href="assets/css/demo.css">
+  <link rel="stylesheet" href="assets/css/github.css">
+
+  <link rel="import" href="sections/about.html">
+  <link rel="import" href="sections/windows/windows.html">
+  <link rel="import" href="sections/windows/crash-hang.html">
+  <link rel="import" href="sections/warrior-hero/controller.html">
+  <link rel="import" href="sections/warrior-hero/midi-reader.html">
+  <link rel="import" href="sections/warrior-hero/game.html">
+  <link rel="import" href="sections/library/library.html">
+  <link rel="import" href="sections/library/browse.html">
+  <link rel="import" href="sections/menus/menus.html">
+  <link rel="import" href="sections/menus/shortcuts.html">
+  <link rel="import" href="sections/native-ui/ex-links-file-manager.html">
+  <link rel="import" href="sections/native-ui/notifications.html">
+  <link rel="import" href="sections/native-ui/dialogs.html">
+  <link rel="import" href="sections/native-ui/tray.html">
+  <link rel="import" href="sections/native-ui/drag.html">
+  <link rel="import" href="sections/communication/ipc.html">
+  <link rel="import" href="sections/system/app-sys-information.html">
+  <link rel="import" href="sections/system/clipboard.html">
+  <link rel="import" href="sections/system/protocol-handler.html">
+  <link rel="import" href="sections/media/desktop-capturer.html">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.2/dist/bootstrap-table.min.css">
+
+  <script src="assets/Controller.js/unminified/Controller.js" ></script>
+  <script src="assets/Controller.js/unminified/Controller.layouts.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.spatial.min.js" ></script>
+
+</head>
+<body>
+
+  <nav class="nav js-nav">
+    <header class="nav-header">
+      <h1 class="nav-title">Electron <strong>API Demos</strong></h1>
+      <svg class="nav-header-icon"><use xlink:href="assets/img/icons.svg#icon-electron"></use></svg>
+    </header>
+
+    <div class="nav-item u-category-windows">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+        Windows
+      </h5>
+      <button type="button" id="button-windows" data-section="windows" class="nav-button">Create and manage <em>windows</em></button>
+      <button type="button" id="button-crash-hang" data-section="crash-hang" class="nav-button">Handling window <em>crashes and hangs</em></button>
+    </div>
+
+    <div class="nav-item u-category-warrior-hero">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+        Warrior Hero
+      </h5>
+      <button type="button" id="button-controller" data-section="controller" class="nav-button">Managing Controller(s)</button>
+      <button type="button" id="button-midi-reader" data-section="midi-reader" class="nav-button"><em>Midi Reader</em></button>
+      <button type="button" id="button-game" data-section="game" class="nav-button"><em>Game</em></button>
+    </div>
+
+    <div class="nav-item u-category-library">
+        <h5 class="nav-category">
+          <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          My Library
+        </h5>
+        <button type="button" id="button-library" data-section="library" class="nav-button">Managing Library</button>
+        <button type="button" id="button-browse" data-section="browse" class="nav-button">Browse Songs</button>
+      </div>
+
+    <div class="nav-item u-category-menu">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-menu"></use></svg>
+        Menus
+      </h5>
+      <button type="button" id="button-menus" data-section="menus" class="nav-button">Customize <em>menus</em> </button>
+      <button type="button" id="button-shortcuts" data-section="shortcuts" class="nav-button">Register keyboard <em>shortcuts</em></button>
+    </div>
+
+    <div class="nav-item u-category-native-ui">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-native-ui"></use></svg>
+        Native User Interface</h5>
+      <button type="button" id="button-ex-links-file-manager" data-section="ex-links-file-manager" class="nav-button">Open <em>external links</em> or system <em>file manager</em></button>
+      <button type="button" id="button-notifications" data-section="notifications" class="nav-button"> <em>Notifications</em> with and without custom image</button>
+      <button type="button" id="button-dialogs" data-section="dialogs" class="nav-button">Use system <em>dialogs</em></button>
+      <button type="button" id="button-tray" data-section="tray" class="nav-button">Put your app in the <em>tray</em></button>
+      <button type="button" id="button-drag" data-section="drag" class="nav-button"><em>Drag</em> and drop files</button>
+    </div>
+
+    <div class="nav-item u-category-communication">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-communication"></use></svg>
+        Communication
+      </h5>
+      <button type="button" id="button-ipc" data-section="ipc" class="nav-button">Communicate between the <em>two processes</em></button>
+    </div>
+
+    <div class="nav-item u-category-system">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-system"></use></svg>
+        System
+      </h5>
+      <button type="button" id="button-app-sys-information" data-section="app-sys-information" class="nav-button" >Get app or user <em>system information</em></button>
+      <button type="button" id="button-clipboard" data-section="clipboard" class="nav-button">Copy and paste from the <em>clipboard</em></button>
+      <button type="button" id="button-protocol" data-section="protocol" class="nav-button">Launch app from <em>protocol handler</em></button>
+    </div>
+
+    <div class="nav-item u-category-media">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-media"></use></svg>
+        Media
+      </h5>
+      <button type="button" id="button-desktop-capturer" data-section="desktop-capturer" class="nav-button">Take a <em>screenshot</em></button>
+    </div>
+
+    <footer class="nav-footer">
+      <button type="button" id="button-about" data-modal="about" class="nav-footer-button">About</button>
+      <a class="nav-footer-logo" href="https://github.com" aria-label="Homepage">
+        <svg class="nav-footer-icon"><use xlink:href="assets/img/icons.svg#icon-love"></use></svg>
+      </a>
+    </footer>
+  </nav>
+
+  <main class="content js-content"></main>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.15.2/dist/bootstrap-table.min.js"></script>
+  <script>
+    require('./assets/imports')
+    require('./assets/ex-links')
+    require('./assets/nav')
+    require('./assets/demo-btns')
+    require('./assets/code-blocks')
+    require('./assets/normalize-shortcuts')
+    /*if (Controller.supported) {
+        Controller.search();
+        window.addEventListener('gc.controller.found', function(event) {
+          var controller = event.detail.controller;
+          console.log("Controller found at index " + controller.index + ".");
+          console.log("'" + controller.name + "' is ready!");
+          var midi = fs.readFileSync('./assets/songs/Vardis - I Wanna Be a Guitar Hero (Just for You) (Sygenysis)/notes.mid');
+          midiReader.parseMidi(midi, (data) => {
+            console.log(data);
+          });
+        }, false);
+
+        window.addEventListener('gc.controller.lost', function(event) {
+          console.log("The controller at index " + event.detail.index + " has been disconnected.");
+          console.log(Controller.getController(0));
+        }, false);
+
+        window.addEventListener('gc.button.press', function(event) {
+          var button = event.detail;
+          switch (button.name){
+            case "MISCBUTTON_2": {
+              var sound = new Howl({ src: ['./assets/fx/Electric Guitar/E2 PMute.mp3'] });
+              sound.play();
+              break;
+            }
+            case "MISCBUTTON_3": {
+              var sound = new Howl({ src: ['./assets/fx/Electric Guitar/F2 PMute.mp3'] });
+              sound.play();
+              break;
+            }
+            case "MISCBUTTON_1": {
+              var sound = new Howl({ src: ['./assets/fx/Electric Guitar/B2 PMute.mp3'] });
+              sound.play();
+              break;
+            }
+            case "MISCBUTTON_4": {
+              var sound = new Howl({ src: ['./assets/fx/Electric Guitar/C2 PMute.mp3'] });
+              sound.play();
+              break;
+            }
+            case "MISCBUTTON_5": {
+              var sound = new Howl({ src: ['./assets/fx/Electric Guitar/D2 PMute.mp3'] });
+              sound.play();
+              break;
+            }
+          }
+          console.log(button);
+        }, false);
+    } else console.log("Controller API Not supproted :/")*/
+  </script>
+</body>
+</html>
