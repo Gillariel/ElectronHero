@@ -1,4 +1,5 @@
 const {net, ClientRequest} = require('electron')
+const axios = require('axios').default
 
 const Query = {
     name: "", artist: "", album: "", genre: "", charter: "",
@@ -8,20 +9,16 @@ const Query = {
 }
 
 const handleResponse = res => {
-    if(res.statusCode >= 200 && res.statusCode <= 299){
-        return { data: res, complete: true }
-    } else if(res.statusCode >= 300 && res.statusCode <= 399){
-        console.log("Redirection happen: " + res.statusMessage)
-        return { complete: false } 
-    } else if(res.statusCode >= 400 && res.statusCode <= 499){
-        console.log("Client Error: " + res.statusMessage)
-        return { complete: false }  
-    } else if(res.statusCode >= 500 && res.statusCode <= 599){
-        console.log("Server Error: " + res.statusMessage)
-        return { complete: false }
+    if(res.status >= 200 && res.status <= 299){
+        return { data: res.data, complete: true }
+    } else if(res.status >= 300 && res.status <= 399){
+        return { data: "Redirection happen: " + res.statusText, complete: false } 
+    } else if(res.status >= 400 && res.status <= 499){
+        return { data: "Client Error: " + res.statusText, complete: false }  
+    } else if(res.status >= 500 && res.status <= 599){
+        return { data: "Server Error: " + res.statusText, complete: false }
     } else {
-        console.log("unknown response code ?? : " + res.statusMessage)
-        return { complete: false }
+        return { data: "unknown response code ?? : " + res.statusText, complete: false }
     }
 }
 
@@ -29,88 +26,30 @@ const METHODS = {
     GET: "GET",
     POST: "POST"
 }
-const CHORUS = {
-    protocol: "https:",
-    hostname: "chorus.fightthe.pw",
-    host: "chorus.fightthe.pw:443",
-    port: 443,
-    path: "/api/"
-}
+const CHORUS = "https://chorus.fightthe.pw/api/"
 
 exports.GetLatest = (cb) => {
-    const reqInfo = {
-        method: METHODS.GET,
-        protocol: CHORUS.protocol,
-        hostname: CHORUS.hostname,
-        host: CHORUS.host,
-        port: CHORUS.port,
-        path: `${CHORUS.path}latest`
-    }
-    const req = net.request(reqInfo);
-    req.on('response', res => {
-        let dataCheck = handleResponse(res);
-        if(dataCheck)
-            cb(dataCheck.data)
-        else 
-            cb([]); 
-    });
-    req.on('error', err => { console.log(err.message) });
-    req.on('login', ( authInfo, cb) => {
-        console.log("need to provided auth");
-        cb("MyUsername", "myPassword");
-    });
-    req.end();
-    progress = req.getUploadProgress();
+    axios.get(`${CHORUS}latest`)
+    .then((res) => {
+        cb(handleResponse(res))
+    })
+    .catch(err => { console.log(err.message) });
 }
 
-exports.Count = () => {
-    const reqInfo = {
-        method: METHODS.GET,
-        protocol: CHORUS.protocol,
-        hostname: CHORUS.hostname,
-        host: CHORUS.host,
-        port: CHORUS.port,
-        path: `${CHORUS.path}count`
-    }
-    const req = new net.request(reqInfo);
-    req.on('response', res => {
-        let dataCheck = handleResponse(res);
-        if(dataCheck)
-            cb(dataCheck.data)
-        else 
-            cb([]) 
-    });
-    req.on('error', err => { console.log(err.message) });
-    req.on('login', ( authInfo, cb) => {
-        console.log("need to provided auth");
-        cb("MyUsername", "myPassword");
-    });
-    progress = req.getUploadProgress();
+exports.Count = (cb) => {
+    axios.get(`${CHORUS}count`)
+    .then((res) => {
+        cb(handleResponse(res))
+    })
+    .catch(err => { console.log(err.message) });
 }
 
-exports.GetRandom = () => {
-    const reqInfo = {
-        method: METHODS.GET,
-        protocol: CHORUS.protocol,
-        hostname: CHORUS.hostname,
-        host: CHORUS.host,
-        port: CHORUS.port,
-        path: `${CHORUS.path}random`
-    }
-    const req = new ClientRequest(reqInfo);
-    req.on('response', res => {
-        let dataCheck = handleResponse(res);
-        if(dataCheck)
-            return dataCheck.data
-        else 
-            return [] 
-    });
-    req.on('error', err => { console.log(err.message) });
-    req.on('login', ( authInfo, cb) => {
-        console.log("need to provided auth");
-        cb("MyUsername", "myPassword");
-    });
-    progress = req.getUploadProgress();
+exports.GetRandom = (cb) => {
+    axios.get(`${CHORUS}random`)
+    .then((res) => {
+        cb(handleResponse(res))
+    })
+    .catch(err => { console.log(err.message) });
 }
 
 /**
@@ -126,8 +65,9 @@ exports.GetRandom = () => {
                 hasForced, hasOpen, hasTap, hasSections, hasStarPower, hasSoloSections, hasStems, hasVideo: self explanatory, 0 to query for absence, 1 to query for presence.
  */
 const QueryBuilder = (Query) => {
-    const query = "";
+    let query = "query=";
     query += Object.keys(Query).map(queryKey => {
+        const queryValue = Query[queryKey]
         /*if(queryKey.includes("tier")) {
             // gretare, less etc process
         } else if (queryKey.includes("diff")) {
@@ -137,34 +77,18 @@ const QueryBuilder = (Query) => {
                 :*/
             /*return `${queryKey}="${Query.queryKey}"` 
         } else*/ if(queryKey.includes("has")){
-            return `${queryKey}="${Query.queryKey ? 1 : 0}"`
+            return `${queryKey}=${queryValue ? 1 : 0}`
         } else
-            return `${queryKey}="${Query.queryKey}"`
+            return `${queryKey}=${queryValue}`
     })
     return query;
 } 
 
-exports.GetByQuery = (query) => {
-    const reqInfo = {
-        method: METHODS.GET,
-        protocol: CHORUS.protocol,
-        hostname: CHORUS.hostname,
-        host: CHORUS.host,
-        port: CHORUS.port,
-        path: `${CHORUS.path}search/?${QueryBuilder(query)}`
-    }
-    const req = new ClientRequest(reqInfo);
-    req.on('response', res => {
-        let dataCheck = handleResponse(res);
-        if(dataCheck)
-            return dataCheck.data
-        else 
-            return [] 
-    });
-    req.on('error', err => { console.log(err.message) });
-    req.on('login', ( authInfo, cb) => {
-        console.log("need to provided auth");
-        cb("MyUsername", "myPassword");
-    });
-    progress = req.getUploadProgress();
+exports.GetByQuery = (query, cb) => {
+    const url = `${CHORUS}search/?${QueryBuilder(query)}`
+    axios.get(url)
+    .then((res) => {
+        cb(handleResponse(res))
+    })
+    .catch(err => { console.log(err.message) });
 }
